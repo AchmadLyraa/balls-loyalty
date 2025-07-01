@@ -81,15 +81,14 @@ cd balls-loyalty-system
 ```shellscript
 npm install
 # atau
-yarn install
+pnpm install
 ```
 
 
 3. **Konfigurasi Variabel Lingkungan:**
 
-1. Buat file baru bernama `.env.local` di root proyek Anda.
-2. Salin konten dari `.env.example` ke `.env.local`.
-3. Isi variabel-variabel berikut:
+1. Salin konten dari `.env.local` ke `.env`.
+2. Isi variabel-variabel berikut:
 
 1. `DATABASE_URL`: URL koneksi ke database PostgreSQL Anda (misalnya: `postgresql://user:password@localhost:5432/balls_loyalty`).
 2. `NEXTAUTH_URL`: URL aplikasi Anda (misalnya: `http://localhost:3000`).
@@ -134,7 +133,7 @@ npx prisma studio
 ```shellscript
 npm run dev
 # atau
-yarn dev
+pnpm dev
 ```
 
 

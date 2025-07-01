@@ -122,7 +122,19 @@
 │   │   └── payments
 │   │       ├── 0a65d8f3-3b59-466b-bcf7-47a36e8fcfa8.png
 │   │       ├── 161b8cdc-a349-4d6c-803b-f36c2b233175.png
-│   │       └── a6a04e3a-55a3-43e2-bca0-1107f930b745.png
+│   │       ├── 1fb17a00-4090-4af6-b45c-d328c275b0e5.png
+│   │       ├── 27e2bdec-3df2-4bff-a62f-20fe9419e2ea.png
+│   │       ├── 3f8e49d5-aa53-42b6-b49d-75403885b3f5.png
+│   │       ├── 52243b5f-c2a3-45c7-9b0e-90bf59d32482.png
+│   │       ├── 5b7949ba-5d9d-4ded-86eb-a8b72ac36bd5.png
+│   │       ├── 5fa1606a-8a68-4dcb-8677-2fd406169fab.png
+│   │       ├── 6fb538b8-e63e-4029-96d6-5dfafeb09c01.png
+│   │       ├── 7b2a65d3-f7f2-4b3d-8eab-1e694411209f.png
+│   │       ├── 7dee4226-e0cf-4224-9f99-435e566a3cb7.png
+│   │       ├── 8890512d-6a9a-43e3-8ee8-1a037cbc0f93.png
+│   │       ├── 90f76779-7185-497b-8dba-a7ff3cc4662d.png
+│   │       ├── a6a04e3a-55a3-43e2-bca0-1107f930b745.png
+│   │       └── bd2cf810-3cd3-4ea8-9594-3b4938545953.png
 │   ├── placeholder.jpg
 │   ├── placeholder-logo.png
 │   ├── placeholder-logo.svg
@@ -137,8 +149,9 @@
 ├── package.json
 ├── pnpm-lock.yaml
 ├── postcss.config.mjs
+├── readme.md
 ├── struktur-folder.txt
 ├── tailwind.config.ts
 └── tsconfig.json
 
-30 directories, 112 files
+30 directories, 125 files
