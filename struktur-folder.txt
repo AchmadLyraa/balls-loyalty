@@ -1,0 +1,144 @@
+.
+├── app
+│   ├── admin
+│   │   ├── loyalty
+│   │   │   └── page.tsx
+│   │   └── verify-upload
+│   │       └── page.tsx
+│   ├── api
+│   │   └── auth
+│   │       └── [...nextauth]
+│   │           └── route.ts
+│   ├── customer
+│   │   ├── loyalty
+│   │   │   └── page.tsx
+│   │   └── upload-payment
+│   │       └── page.tsx
+│   ├── login
+│   │   └── page.tsx
+│   ├── register
+│   │   └── page.tsx
+│   ├── super-admin
+│   │   └── page.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components
+│   ├── admin
+│   │   ├── loyalty-program-management.tsx
+│   │   ├── points-settings.tsx
+│   │   ├── qr-scanner.tsx
+│   │   ├── redemption-management.tsx
+│   │   └── verify-upload-list.tsx
+│   ├── auth
+│   │   ├── login-form.tsx
+│   │   └── register-form.tsx
+│   ├── customer
+│   │   ├── available-rewards.tsx
+│   │   ├── loyalty-dashboard.tsx
+│   │   ├── payment-history.tsx
+│   │   ├── redemption-history.tsx
+│   │   └── upload-payment-form.tsx
+│   ├── layout
+│   │   └── navbar.tsx
+│   ├── super-admin
+│   │   ├── admin-management.tsx
+│   │   ├── audit-logs.tsx
+│   │   └── system-stats.tsx
+│   ├── ui
+│   │   ├── accordion.tsx
+│   │   ├── alert-dialog.tsx
+│   │   ├── alert.tsx
+│   │   ├── aspect-ratio.tsx
+│   │   ├── avatar.tsx
+│   │   ├── badge.tsx
+│   │   ├── breadcrumb.tsx
+│   │   ├── button.tsx
+│   │   ├── calendar.tsx
+│   │   ├── card.tsx
+│   │   ├── carousel.tsx
+│   │   ├── chart.tsx
+│   │   ├── checkbox.tsx
+│   │   ├── collapsible.tsx
+│   │   ├── command.tsx
+│   │   ├── context-menu.tsx
+│   │   ├── dialog.tsx
+│   │   ├── drawer.tsx
+│   │   ├── dropdown-menu.tsx
+│   │   ├── form.tsx
+│   │   ├── hover-card.tsx
+│   │   ├── input-otp.tsx
+│   │   ├── input.tsx
+│   │   ├── label.tsx
+│   │   ├── menubar.tsx
+│   │   ├── navigation-menu.tsx
+│   │   ├── pagination.tsx
+│   │   ├── popover.tsx
+│   │   ├── progress.tsx
+│   │   ├── radio-group.tsx
+│   │   ├── resizable.tsx
+│   │   ├── scroll-area.tsx
+│   │   ├── select.tsx
+│   │   ├── separator.tsx
+│   │   ├── sheet.tsx
+│   │   ├── sidebar.tsx
+│   │   ├── skeleton.tsx
+│   │   ├── slider.tsx
+│   │   ├── sonner.tsx
+│   │   ├── switch.tsx
+│   │   ├── table.tsx
+│   │   ├── tabs.tsx
+│   │   ├── textarea.tsx
+│   │   ├── toaster.tsx
+│   │   ├── toast.tsx
+│   │   ├── toggle-group.tsx
+│   │   ├── toggle.tsx
+│   │   ├── tooltip.tsx
+│   │   ├── use-mobile.tsx
+│   │   └── use-toast.ts
+│   ├── providers.tsx
+│   └── theme-provider.tsx
+├── hooks
+│   ├── use-mobile.tsx
+│   └── use-toast.ts
+├── lib
+│   ├── actions
+│   │   ├── admin.ts
+│   │   ├── auth.ts
+│   │   ├── customer.ts
+│   │   └── super-admin.ts
+│   ├── utils
+│   │   ├── email.ts
+│   │   └── qr-generator.ts
+│   ├── auth.ts
+│   ├── prisma.ts
+│   ├── types.ts
+│   └── utils.ts
+├── prisma
+│   ├── schema.prisma
+│   └── seed.ts
+├── public
+│   ├── uploads
+│   │   └── payments
+│   │       ├── 0a65d8f3-3b59-466b-bcf7-47a36e8fcfa8.png
+│   │       ├── 161b8cdc-a349-4d6c-803b-f36c2b233175.png
+│   │       └── a6a04e3a-55a3-43e2-bca0-1107f930b745.png
+│   ├── placeholder.jpg
+│   ├── placeholder-logo.png
+│   ├── placeholder-logo.svg
+│   ├── placeholder.svg
+│   └── placeholder-user.jpg
+├── styles
+│   └── globals.css
+├── components.json
+├── middleware.ts
+├── next.config.mjs
+├── next-env.d.ts
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── struktur-folder.txt
+├── tailwind.config.ts
+└── tsconfig.json
+
+30 directories, 112 files

@@ -1,0 +1,242 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or "mysql", "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enum untuk role sistem
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// Enum untuk status berbagai transaksi
+enum PaymentUploadStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RedemptionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  USED
+}
+
+// Model User - Central authentication dan profil
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  phone     String?
+  role      UserRole @default(CUSTOMER)
+  password  String
+  isActive  Boolean  @default(true)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relasi untuk Customer
+  customerProfile CustomerProfile?
+  
+  // Relasi untuk tracking yang dibuat admin
+  createdAdmins   User[] @relation("AdminCreator")
+  createdBy       User?  @relation("AdminCreator", fields: [createdById], references: [id])
+  createdById     String?
+  
+  @@map("users")
+}
+
+// Model CustomerProfile - Extended info untuk customer
+model CustomerProfile {
+  id              String @id @default(cuid())
+  userId          String @unique
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Loyalty Points
+  totalPoints     Int    @default(0)
+  availablePoints Int    @default(0) // Points yang bisa digunakan (total - used)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relasi
+  paymentUploads PaymentUpload[]
+  pointTransactions PointTransaction[]
+  redemptions    Redemption[]
+  bookingParticipants BookingParticipant[]
+  
+  @@map("customer_profiles")
+}
+
+// Model PaymentUpload - Upload bukti pembayaran booking
+model PaymentUpload {
+  id              String              @id @default(cuid())
+  customerId      String
+  customer        CustomerProfile     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  // Detail booking
+  bookingDate     DateTime
+  startTime       DateTime
+  endTime         DateTime
+  durationHours   Int
+  
+  // Bukti pembayaran
+  paymentProof    String              // URL/path foto bukti bayar
+  totalAmount     Decimal?            @db.Decimal(10, 2)
+  
+  // Status dan approval
+  status          PaymentUploadStatus @default(PENDING)
+  adminNotes      String?
+  approvedBy      String?
+  approvedAt      DateTime?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relasi
+  bookingParticipants BookingParticipant[]
+  pointTransactions   PointTransaction[]
+  
+  @@map("payment_uploads")
+}
+
+// Model BookingParticipant - Customer yang ikut main dalam booking
+model BookingParticipant {
+  id              String        @id @default(cuid())
+  paymentUploadId String
+  paymentUpload   PaymentUpload @relation(fields: [paymentUploadId], references: [id], onDelete: Cascade)
+  
+  customerName    String
+  customerId      String?       // Null jika customer belum terdaftar
+  customerProfile CustomerProfile? @relation(fields: [customerId], references: [id])
+  
+  // Points yang akan diberikan ke participant ini
+  pointsAllocated Int @default(0)
+  
+  createdAt DateTime @default(now())
+  
+  @@map("booking_participants")
+}
+
+// Model PointTransaction - History transaksi point
+model PointTransaction {
+  id              String @id @default(cuid())
+  customerId      String
+  customer        CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  // Detail transaksi
+  type            String          // "EARNED", "REDEEMED", "EXPIRED", "ADJUSTED"
+  points          Int             // Positive untuk earn, negative untuk redeem
+  description     String
+  
+  // Reference ke sumber transaksi
+  paymentUploadId String?
+  paymentUpload   PaymentUpload? @relation(fields: [paymentUploadId], references: [id])
+  redemptionId    String?
+  redemption      Redemption?    @relation(fields: [redemptionId], references: [id])
+  
+  // Metadata
+  metadata        Json?           // Flexible field untuk data tambahan
+  
+  createdAt DateTime @default(now())
+  
+  @@map("point_transactions")
+}
+
+// Model LoyaltyProgram - Program loyalty yang bisa di-redeem
+model LoyaltyProgram {
+  id               String  @id @default(cuid())
+  name             String
+  description      String
+  thumbnail        String? // URL/path gambar
+  requiredPoints   Int
+  isActive         Boolean @default(true)
+  
+  // Stock management (optional)
+  maxRedemptions   Int?    // Null = unlimited
+  currentRedemptions Int   @default(0)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relasi
+  redemptions Redemption[]
+  
+  @@map("loyalty_programs")
+}
+
+// Model Redemption - Customer redeem reward
+model Redemption {
+  id              String          @id @default(cuid())
+  customerId      String
+  customer        CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  programId       String
+  program         LoyaltyProgram  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  
+  // Status dan approval
+  status          RedemptionStatus @default(PENDING)
+  pointsUsed      Int
+  
+  // QR Code untuk verification
+  qrCode          String          @unique
+  qrCodeExpiry    DateTime?
+  
+  // Admin approval
+  adminNotes      String?
+  approvedBy      String?
+  approvedAt      DateTime?
+  usedAt          DateTime?       // Kapan QR code di-scan/digunakan
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relasi
+  pointTransactions PointTransaction[]
+  
+  @@map("redemptions")
+}
+
+// Model SystemSettings - Konfigurasi sistem
+model SystemSettings {
+  id                    String @id @default(cuid())
+  key                   String @unique
+  value                 String
+  description           String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("system_settings")
+}
+
+// Model AuditLog - Logging untuk tracking aktivitas penting
+model AuditLog {
+  id          String @id @default(cuid())
+  userId      String
+  action      String // "CREATE", "UPDATE", "DELETE", "APPROVE", "REJECT"
+  resource    String // "user", "payment_upload", "redemption", etc.
+  resourceId  String
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?
+  userAgent   String?
+  
+  createdAt DateTime @default(now())
+  
+  @@map("audit_logs")
+}
