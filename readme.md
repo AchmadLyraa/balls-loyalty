@@ -1,5 +1,3 @@
----
-
 # Dokumentasi Proyek: BALLS Loyalty System
 
 ## Deskripsi Proyek
@@ -143,9 +141,3 @@ pnpm dev
 6. **Akses Aplikasi:**
 
 1. Buka browser Anda dan navigasikan ke `http://localhost:3000`.
-
-
-
-
-
----
