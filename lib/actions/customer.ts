@@ -7,6 +7,7 @@ import { z } from "zod"
 import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { randomUUID } from "crypto"
+import { uploadFileToSupabase } from "@/lib/supabase-storage"
 
 const uploadPaymentSchema = z.object({
   bookingDate: z.string().min(1, "Tanggal booking harus diisi"),
@@ -63,19 +64,36 @@ export async function uploadPaymentProof(formData: FormData) {
     }
 
     // Create upload directory if it doesn't exist
-    const uploadDir = join(process.cwd(), "public", "uploads", "payments")
-    await mkdir(uploadDir, { recursive: true })
+//    const uploadDir = join(process.cwd(), "public", "uploads", "payments")
+//    await mkdir(uploadDir, { recursive: true })
+//
+//    // Generate unique filename
+//    const fileExtension = file.name.split(".").pop()
+//    const fileName = `${randomUUID()}.${fileExtension}`
+//    const filePath = join(uploadDir, fileName)
+//    const publicPath = `/uploads/payments/${fileName}`
+//
+//    // Save file
+//    const bytes = await file.arrayBuffer()
+//    const buffer = Buffer.from(bytes)
+//    await writeFile(filePath, buffer)
+    
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      return { success: false, error: "Ukuran file maksimal 5MB" }
+    }
 
-    // Generate unique filename
-    const fileExtension = file.name.split(".").pop()
-    const fileName = `${randomUUID()}.${fileExtension}`
-    const filePath = join(uploadDir, fileName)
-    const publicPath = `/uploads/payments/${fileName}`
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      return { success: false, error: "File harus berupa gambar" }
+    }
 
-    // Save file
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    await writeFile(filePath, buffer)
+    // Upload to Supabase Storage
+    const uploadResult = await uploadFileToSupabase(file, "payment-proofs", `customer-${customerProfile.id}`)
+
+    if (!uploadResult.success) {
+      return { success: false, error: uploadResult.error || "Gagal mengupload file" }
+    }
 
     // Calculate duration
     const startDateTime = new Date(`${bookingDate}T${startTime}`)
@@ -90,7 +108,8 @@ export async function uploadPaymentProof(formData: FormData) {
         startTime: startDateTime,
         endTime: endDateTime,
         durationHours,
-        paymentProof: publicPath,
+//        paymentProof: publicPath,
+        paymentProof: uploadResult.url!,
         totalAmount: totalAmount ? Number.parseFloat(totalAmount) : null,
         status: "PENDING",
       },
@@ -304,7 +323,8 @@ export async function redeemReward(rewardId: string) {
     }
 
     // Generate QR code
-    const qrCode = `BALLS-${randomUUID()}`
+//    const qrCode = `BALLS-${randomUUID()}`
+    const qrCode = `BALLS-${crypto.randomUUID()}`
     const qrCodeExpiry = new Date()
     qrCodeExpiry.setHours(qrCodeExpiry.getHours() + 24) // 24 hours expiry
 
