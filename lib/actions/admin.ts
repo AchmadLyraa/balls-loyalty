@@ -165,17 +165,35 @@ export async function updateLoyaltyProgram(programId: string, formData: FormData
     let thumbnailPath = existingProgram.thumbnail
     const file = formData.get("thumbnail") as File
     if (file && file.size > 0) {
-      const uploadDir = join(process.cwd(), "public", "uploads", "programs")
-      await mkdir(uploadDir, { recursive: true })
+//      const uploadDir = join(process.cwd(), "public", "uploads", "programs")
+//      await mkdir(uploadDir, { recursive: true })
+//
+//      const fileExtension = file.name.split(".").pop()
+//      const fileName = `${randomUUID()}.${fileExtension}`
+//      const filePath = join(uploadDir, fileName)
+//      thumbnailPath = `/uploads/programs/${fileName}`
+//
+//      const bytes = await file.arrayBuffer()
+//      const buffer = Buffer.from(bytes)
+//      await writeFile(filePath, buffer)
+      // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          return { success: false, error: "Ukuran file maksimal 5MB" }
+        }
 
-      const fileExtension = file.name.split(".").pop()
-      const fileName = `${randomUUID()}.${fileExtension}`
-      const filePath = join(uploadDir, fileName)
-      thumbnailPath = `/uploads/programs/${fileName}`
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          return { success: false, error: "File harus berupa gambar" }
+        }
 
-      const bytes = await file.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-      await writeFile(filePath, buffer)
+        // Upload to Supabase Storage
+        const uploadResult = await uploadFileToSupabase(file, "program-thumbnails", "loyalty-programs")
+
+        if (!uploadResult.success) {
+          return { success: false, error: uploadResult.error || "Gagal mengupload thumbnail" }
+        }
+
+        thumbnailPath = uploadResult.url
     }
 
     // Update program
